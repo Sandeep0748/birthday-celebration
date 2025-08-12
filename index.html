@@ -253,13 +253,19 @@
       balloon.style.backgroundColor = randomColor();
       balloon.style.animationDuration = (6 + Math.random() * 4) + 's';
 
-      balloon.addEventListener('click', () => {
+      function popBalloon() {
         popSound.currentTime = 0;
         popSound.play();
         const rect = balloon.getBoundingClientRect();
         createConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
         balloon.remove();
-      });
+      }
+
+      balloon.addEventListener('click', popBalloon);
+      balloon.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        popBalloon();
+      }, { passive: false });
 
       document.body.appendChild(balloon);
 
@@ -274,7 +280,6 @@
 
     function stopBalloons() {
       clearInterval(balloonInterval);
-      // Remove existing balloons
       document.querySelectorAll('.balloon').forEach(b => b.remove());
     }
 
@@ -285,7 +290,6 @@
         startSparkles();
         startBalloons();
 
-        // Extra effect: background color pulse
         document.body.animate([
           { background: 'linear-gradient(135deg, var(--bg1), var(--bg2))' },
           { background: 'linear-gradient(135deg, #ff7eb3, #ff65a3)' },
@@ -295,7 +299,6 @@
           iterations: Infinity
         });
 
-        // Button pulse effect
         musicBtn.animate([
           { transform: 'scale(1)' },
           { transform: 'scale(1.1)' },
@@ -304,16 +307,6 @@
           duration: 1000,
           iterations: Infinity
         });
-      } else {
-        // If you want to toggle off celebration, add this:
-        /*
-        isCelebrating = false;
-        musicBtn.textContent = "🎉 Let's Celebrate 🎉";
-        stopSparkles();
-        stopBalloons();
-        document.body.style.background = '';
-        musicBtn.getAnimations().forEach(anim => anim.cancel());
-        */
       }
     });
   </script>
